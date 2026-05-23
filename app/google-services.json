@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1033111093925",
+    "project_id": "writeai-android",
+    "storage_bucket": "writeai-android.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033111093925:android:cfd962c0bd3b358b58034c",
+        "android_client_info": {
+          "package_name": "com.example.writeai_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwlIp_k2s6Bwci5WDBQsriCZOvFyGalCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
