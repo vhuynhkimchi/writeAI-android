@@ -2,6 +2,7 @@
 # Bỏ qua toàn bộ các thư mục sinh ra trong quá trình biên dịch
 .gradle/
 .gradle-user-home/
+.gradle-local/
 build/
 /build/
 app/build/

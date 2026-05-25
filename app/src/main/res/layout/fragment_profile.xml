@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".ui.profile.ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,57 +14,52 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/tvGreeting"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvFullName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Xin chào"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:text="Họ tên:" />
+
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Email:" />
 
         <TextView
             android:id="@+id/tvStreak"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Streak hiện tại: 0"
-            android:textSize="18sp" />
+            android:layout_marginTop="8dp"
+            android:text="Streak:" />
 
         <TextView
             android:id="@+id/tvTotalEssay"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Tổng số bài viết: 0"
-            android:textSize="18sp" />
+            android:text="Tổng bài viết:" />
 
         <TextView
             android:id="@+id/tvAverageScore"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Điểm trung bình: 0.00"
-            android:textSize="18sp" />
+            android:text="Điểm trung bình:" />
 
-        <Button
-            android:id="@+id/btnPracticeNow"
+        <TextView
+            android:id="@+id/tvLastPracticeDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Luyện viết ngay" />
+            android:layout_marginTop="8dp"
+            android:text="Ngày luyện gần nhất:" />
 
         <Button
-            android:id="@+id/btnHistory"
+            android:id="@+id/btnReminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Xem lịch sử" />
-
-        <Button
-            android:id="@+id/btnAccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Tài khoản" />
+            android:layout_marginTop="20dp"
+            android:text="Bật nhắc nhở luyện viết" />
 
         <Button
             android:id="@+id/btnLogout"
