@@ -1,21 +1,31 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-
+# --- GRADLE & BUILD ---
+# Bỏ qua toàn bộ các thư mục sinh ra trong quá trình biên dịch
 .gradle/
+.gradle-user-home/
 build/
+/build/
+app/build/
+
+# --- ANDROID STUDIO & IDE CONFIGS ---
+# Bỏ qua các file cấu hình cá nhân của Android Studio và VS Code
+.idea/
+*.iml
+*.iws
+*.ipr
+/local.properties
+local.properties
+.cxx/
+.externalNativeBuild/
+
+# --- CAPTURES & LOGS ---
+# Bỏ qua các file chụp ảnh bộ nhớ, log hệ thống
+captures/
+/captures/
 capture/
 elg/
-.idea/
+*.log
+
+# --- OS FILES ---
+# Bỏ qua file rác của hệ điều hành (Windows/Mac)
+.DS_Store
+Thumbs.db

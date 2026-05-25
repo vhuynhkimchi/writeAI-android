@@ -1,8 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
+    alias(libs.plugins.google.services)
+    
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def geminiKey = properties.getProperty('GEMINI_API_KEY')
 
 android {
     namespace 'com.example.writeai_android'
@@ -20,6 +24,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
     }
 
     buildTypes {
@@ -32,6 +38,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    
+    // Ép Gradle sinh ra class BuildConfig chứa Key
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -43,6 +54,13 @@ dependencies {
     androidTestImplementation libs.espresso.core
     androidTestImplementation libs.ext.junit
 
-    implementation platform('com.google.firebase:firebase-bom:34.13.0')
+    //implementation platform('com.google.firebase:firebase-bom:34.13.0')
     implementation 'com.google.firebase:firebase-analytics'
+
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.firestore
+
+    implementation libs.google.generativeai
+
+    implementation libs.firebase.auth
 }
