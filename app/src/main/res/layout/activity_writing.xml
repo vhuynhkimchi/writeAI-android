@@ -20,27 +20,33 @@
         <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:gravity="center"
                 android:text="‹"
                 android:textColor="#071B33"
-                android:textSize="40sp" />
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false" />
 
             <TextView
+                android:id="@+id/tvWritingTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="4dp"
                 android:text="Luyện viết"
                 android:textColor="#071B33"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false" />
+
         </LinearLayout>
 
         <!-- Label chọn chủ đề -->
@@ -55,20 +61,15 @@
             android:textStyle="bold" />
 
         <!-- Chủ đề sẽ được Java đổ vào -->
-        <HorizontalScrollView
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/layoutTopics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:scrollbars="none">
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/layoutTopics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:flexWrap="wrap"
-                app:alignItems="flex_start"
-                app:justifyContent="flex_start" />
-        </HorizontalScrollView>
+            app:flexDirection="row"
+            app:flexWrap="wrap"
+            app:alignItems="flex_start"
+            app:justifyContent="flex_start" />
 
         <!-- Ô nhập bài viết -->
         <LinearLayout

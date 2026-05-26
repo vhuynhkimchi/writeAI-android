@@ -7,9 +7,9 @@ import com.example.writeai_android.utils.FirebaseHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,13 @@ public class EssayRepository {
             return;
         }
 
+        if (essay.getUserId() == null || essay.getUserId().trim().isEmpty()) {
+            callback.onError("Thiếu userId, không thể lưu bài viết.");
+            return;
+        }
+
         DocumentReference docRef;
+
         if (essay.getEssayId() == null || essay.getEssayId().trim().isEmpty()) {
             docRef = FirebaseHelper.essaysRef().document();
             essay.setEssayId(docRef.getId());
@@ -54,18 +60,49 @@ public class EssayRepository {
     }
 
     public void getEssaysByUser(String userId, RepositoryCallback<List<Essay>> callback) {
+        if (userId == null || userId.trim().isEmpty()) {
+            callback.onError("userId rỗng, không thể tải lịch sử bài viết.");
+            return;
+        }
+
         FirebaseHelper.essaysRef()
                 .whereEqualTo("userId", userId)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Essay> essays = new ArrayList<>();
+
                     for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                         Essay essay = doc.toObject(Essay.class);
+
                         if (essay != null) {
+                            if (essay.getEssayId() == null || essay.getEssayId().trim().isEmpty()) {
+                                essay.setEssayId(doc.getId());
+                            }
+
                             essays.add(essay);
                         }
                     }
+
+                    // Sắp xếp bài viết mới nhất lên trước ở phía Android
+                    Collections.sort(essays, (e1, e2) -> {
+                        Timestamp t1 = e1.getCreatedAt();
+                        Timestamp t2 = e2.getCreatedAt();
+
+                        if (t1 == null && t2 == null) {
+                            return 0;
+                        }
+
+                        if (t1 == null) {
+                            return 1;
+                        }
+
+                        if (t2 == null) {
+                            return -1;
+                        }
+
+                        return t2.compareTo(t1);
+                    });
+
                     callback.onSuccess(essays);
                 })
                 .addOnFailureListener(e -> {
@@ -80,18 +117,26 @@ public class EssayRepository {
             return;
         }
 
-        FirebaseHelper.essaysRef().document(essayId)
+        FirebaseHelper.essaysRef()
+                .document(essayId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
                         callback.onError("Không tìm thấy bài viết.");
                         return;
                     }
+
                     Essay essay = documentSnapshot.toObject(Essay.class);
+
                     if (essay == null) {
                         callback.onError("Dữ liệu bài viết không hợp lệ.");
                         return;
                     }
+
+                    if (essay.getEssayId() == null || essay.getEssayId().trim().isEmpty()) {
+                        essay.setEssayId(documentSnapshot.getId());
+                    }
+
                     callback.onSuccess(essay);
                 })
                 .addOnFailureListener(e -> {

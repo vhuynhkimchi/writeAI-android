@@ -126,34 +126,36 @@ public class WritingActivity extends AppCompatActivity {
     }
 
     private TextView createTopicView(String topic) {
-        TextView textView = new TextView(this);
-        textView.setText(topic);
-        textView.setTextSize(13);
-        textView.setGravity(Gravity.CENTER);
-        textView.setPadding(dp(16), dp(9), dp(16), dp(9));
-        textView.setSingleLine(false);
-        textView.setMinWidth(dp(58));
-        textView.setMinHeight(dp(42));
+    TextView textView = new TextView(this);
 
-        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                FlexboxLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 0, dp(8), dp(8));
-        textView.setLayoutParams(params);
+    textView.setText(topic);
+    textView.setTextSize(13);
+    textView.setGravity(Gravity.CENTER);
+    textView.setSingleLine(true);
+    textView.setMinWidth(dp(58));
+    textView.setHeight(dp(42));
+    textView.setPadding(dp(14), 0, dp(14), 0);
 
-        textView.setOnClickListener(v -> {
-            if (selectedTopics.contains(topic)) {
-                selectedTopics.remove(topic);
-            } else {
-                selectedTopics.add(topic);
-            }
+    FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+            FlexboxLayout.LayoutParams.WRAP_CONTENT,
+            dp(42)
+    );
 
-            refreshTopicViews();
-        });
+    params.setMargins(0, 0, dp(8), dp(8));
+    textView.setLayoutParams(params);
 
-        return textView;
-    }
+    textView.setOnClickListener(v -> {
+        if (selectedTopics.contains(topic)) {
+            selectedTopics.remove(topic);
+        } else {
+            selectedTopics.add(topic);
+        }
+
+        refreshTopicViews();
+    });
+
+    return textView;
+}
 
     private void refreshTopicViews() {
         for (int i = 0; i < layoutTopics.getChildCount(); i++) {
