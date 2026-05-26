@@ -1,76 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:background="#F7F8FC"
     tools:context=".ui.main.MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="96dp">
 
-        <TextView
-            android:id="@+id/tvGreeting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Xin chào"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvStreak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Streak hiện tại: 0"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tvTotalEssay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Tổng số bài viết: 0"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tvAverageScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Điểm trung bình: 0.00"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/btnPracticeNow"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Luyện viết ngay" />
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="120dp">
 
-        <Button
-            android:id="@+id/btnHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Xem lịch sử" />
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnAccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Tài khoản" />
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ứng dụng luyện viết với AI"
+                    android:textColor="#06285D"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Đăng xuất" />
-    </LinearLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/btnLogout"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:gravity="center"
+                    android:text="↪"
+                    android:textColor="#3F3F46"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Start Writing Card -->
+            <LinearLayout
+                android:id="@+id/btnPracticeNow"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:layout_marginTop="38dp"
+                android:background="@drawable/bg_main_primary_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="78dp"
+                    android:layout_height="78dp"
+                    android:background="@drawable/bg_plus_box"
+                    android:gravity="center"
+                    android:text="+"
+                    android:textColor="#06285D"
+                    android:textSize="42sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:gravity="center"
+                    android:text="Bắt đầu bài viết mới"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="Viết 1 bài viết hằng ngày để điểm danh"
+                    android:textColor="#8FA9D6"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <!-- Streak Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="30dp"
+                android:paddingEnd="28dp">
+
+                <View
+                    android:layout_width="58dp"
+                    android:layout_height="58dp"
+                    android:background="@drawable/bg_circle_light" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvStreak"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 ngày liên tiếp"
+                        android:textColor="#071B33"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Bạn đang làm rất tốt!"
+                        android:textColor="#6D6D78"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="52dp"
+                    android:layout_height="58dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/bg_bar_dark" />
+
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="42dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/bg_bar_dark" />
+
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/bg_bar_dark" />
+
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="34dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/bg_bar_light" />
+
+                    <View
+                        android:layout_width="7dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/bg_bar_light" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Stats Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal">
+
+                <!-- Average Score -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_white_card"
+                    android:orientation="vertical"
+                    android:padding="26dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.16"
+                        android:text="ĐIỂM TRUNG\nBÌNH"
+                        android:textColor="#4A4A55"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvAverageScore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8.5"
+                            android:textColor="#06285D"
+                            android:textSize="42sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="/10"
+                            android:textColor="#006EAB"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="22dp"
+                        android:max="100"
+                        android:progress="85"
+                        android:progressDrawable="@drawable/bg_progress_score" />
+                </LinearLayout>
+
+                <!-- Total Essay -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_white_card"
+                    android:orientation="vertical"
+                    android:padding="26dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.16"
+                        android:text="ĐÃ LUYỆN TẬP"
+                        android:textColor="#4A4A55"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvTotalEssay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="#06285D"
+                            android:textSize="42sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="bài"
+                            android:textColor="#6D6D78"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- About Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/bg_white_card"
+                android:orientation="vertical"
+                android:padding="30dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Về Ứng Dụng"
+                    android:textColor="#06285D"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:lineSpacingExtra="6dp"
+                    android:text="Nền tảng giúp bạn kiến tạo thói quen viết lách mỗi ngày, theo dõi sự phát triển của bản thân và kết nối cùng cộng đồng những người yêu thích sáng tạo nội dung."
+                    android:textColor="#6D6D78"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Tách thanh điều hướng ra file riêng -->
+    <include layout="@layout/bottom_navigation" />
+
+</FrameLayout>

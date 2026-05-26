@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,21 +18,21 @@ import com.example.writeai_android.R;
 import com.example.writeai_android.data.model.User;
 import com.example.writeai_android.data.repository.UserRepository;
 import com.example.writeai_android.ui.auth.LoginActivity;
-import com.example.writeai_android.ui.history.HistoryActivity;
-import com.example.writeai_android.ui.profile.ProfileActivity;
 import com.example.writeai_android.ui.writing.WritingActivity;
+import com.example.writeai_android.utils.BottomNavigationHelper;
 import com.example.writeai_android.utils.NotificationHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQ_NOTIFICATION_PERMISSION = 991;
 
     private TextView tvGreeting, tvStreak, tvTotalEssay, tvAverageScore;
+    private View btnPracticeNow, btnLogout;
+
     private final UserRepository userRepository = new UserRepository();
 
     @Override
@@ -45,35 +45,44 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        tvGreeting = findViewById(R.id.tvGreeting);
-        tvStreak = findViewById(R.id.tvStreak);
-        tvTotalEssay = findViewById(R.id.tvTotalEssay);
-        tvAverageScore = findViewById(R.id.tvAverageScore);
+        initViews();
+        handleEvents();
 
-        Button btnPracticeNow = findViewById(R.id.btnPracticeNow);
-        Button btnHistory = findViewById(R.id.btnHistory);
-        Button btnAccount = findViewById(R.id.btnAccount);
-        Button btnLogout = findViewById(R.id.btnLogout);
-
-        btnPracticeNow.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, WritingActivity.class)));
-        btnHistory.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
-        btnAccount.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
-        btnLogout.setOnClickListener(v -> logout());
+        // Gọi helper điều hướng dưới cùng
+        BottomNavigationHelper.setup(this, BottomNavigationHelper.TAB_HOME);
 
         requestNotificationPermissionIfNeeded();
         NotificationHelper.createNotificationChannel(this);
     }
 
+    private void initViews() {
+        tvGreeting = findViewById(R.id.tvGreeting);
+        tvStreak = findViewById(R.id.tvStreak);
+        tvTotalEssay = findViewById(R.id.tvTotalEssay);
+        tvAverageScore = findViewById(R.id.tvAverageScore);
+
+        btnPracticeNow = findViewById(R.id.btnPracticeNow);
+        btnLogout = findViewById(R.id.btnLogout);
+    }
+
+    private void handleEvents() {
+        btnPracticeNow.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, WritingActivity.class);
+            startActivity(intent);
+        });
+
+        btnLogout.setOnClickListener(v -> logout());
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             goToLogin();
             return;
         }
+
         loadUserInfo();
     }
 
@@ -84,10 +93,15 @@ public class MainActivity extends AppCompatActivity {
                 if (user == null) {
                     return;
                 }
-                tvGreeting.setText("Xin chào, " + safeText(user.getFullName()));
-                tvStreak.setText("Streak hiện tại: " + user.getStreakCount());
-                tvTotalEssay.setText("Tổng số bài viết: " + user.getTotalEssay());
-                tvAverageScore.setText("Điểm trung bình: " + formatScore(user.getAverageScore()));
+
+                int streakCount = user.getStreakCount();
+                int totalEssay = user.getTotalEssay();
+                double averageScore = user.getAverageScore();
+
+                tvGreeting.setText("Ứng dụng luyện viết với AI");
+                tvStreak.setText(streakCount + " ngày liên tiếp");
+                tvTotalEssay.setText(String.valueOf(totalEssay));
+                tvAverageScore.setText(formatScoreOneDigit(averageScore));
             }
 
             @Override
@@ -97,17 +111,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String formatScore(double score) {
-        DecimalFormat df = new DecimalFormat("0.00");
+    private String formatScoreOneDigit(double score) {
+        DecimalFormat df = new DecimalFormat("0.0");
         return df.format(score);
-    }
-
-    private String safeText(String value) {
-        return value == null ? "" : value;
     }
 
     private void logout() {
         FirebaseAuth.getInstance().signOut();
+
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -125,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
+
                 ActivityCompat.requestPermissions(
                         this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS},
@@ -135,13 +147,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == REQ_NOTIFICATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this,
+            if (grantResults.length > 0
+                    && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+
+                Toast.makeText(
+                        this,
                         "Bạn có thể bật lại quyền thông báo trong Cài đặt để nhận nhắc nhở.",
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_LONG
+                ).show();
             }
         }
     }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F7F8FC"
     android:fillViewport="true"
     tools:context=".ui.writing.WritingActivity">
 
@@ -11,45 +12,244 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="32dp">
 
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="‹"
+                android:textColor="#071B33"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Luyện viết"
+                android:textColor="#071B33"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Label chọn chủ đề -->
         <TextView
-            android:id="@+id/tvTopic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Topic:"
-            android:textSize="22sp"
+            android:layout_marginTop="24dp"
+            android:letterSpacing="0.15"
+            android:text="CHỌN CHỦ ĐỀ"
+            android:textColor="#5F636D"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etEssayContent"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="16dp"
-            android:gravity="top"
-            android:hint="Nhập bài viết tiếng Anh của bạn"
-            android:inputType="textMultiLine" />
-
-        <Button
-            android:id="@+id/btnChangeTopic"
+        <!-- Chủ đề sẽ được Java đổ vào -->
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Đổi đề bài" />
+            android:layout_marginTop="14dp"
+            android:scrollbars="none">
 
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layoutTopics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                app:alignItems="flex_start"
+                app:justifyContent="flex_start" />
+        </HorizontalScrollView>
+
+        <!-- Ô nhập bài viết -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="360dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_white_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/etEssayContent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:hint="Nhập bài viết tiếng Anh của bạn..."
+                android:inputType="textMultiLine|textCapSentences"
+                android:padding="0dp"
+                android:textColor="#071B33"
+                android:textColorHint="#9CA3AF"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E5EAF3" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvWordCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0 words"
+                    android:textColor="#6D7280"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCharCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 chars"
+                    android:textColor="#6D7280"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Nút chấm điểm -->
         <Button
             android:id="@+id/btnGradeEssay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Chấm bài" />
+            android:layout_height="58dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_button_primary"
+            android:text="Chấm điểm với AI"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:visibility="gone" />
+
+        <!-- Khu vực kết quả AI: ban đầu ẩn -->
+        <LinearLayout
+            android:id="@+id/layoutAiResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Điểm số -->
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/bg_score_circle"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.15"
+                    android:text="ĐIỂM SỐ"
+                    android:textColor="#9AB4E0"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0"
+                        android:textColor="#9AB4E0"
+                        android:textSize="42sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="/10"
+                        android:textColor="#9AB4E0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Chỉnh sửa từ AI -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="✎  Chỉnh sửa từ AI"
+                android:textColor="#071B33"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCorrectedText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_ai_box"
+                android:lineSpacingExtra="6dp"
+                android:padding="16dp"
+                android:textColor="#071B33"
+                android:textSize="16sp" />
+
+            <!-- Phân tích từ AI -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="☼  Phân tích từ AI"
+                android:textColor="#071B33"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/layoutAnalysis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical" />
+
+            <!-- Nút lưu -->
+            <Button
+                android:id="@+id/btnSaveEssay"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/bg_button_primary"
+                android:text="Lưu lại"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

@@ -23,10 +23,9 @@
             android:layout_width="92dp"
             android:layout_height="92dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="70dp"
-            android:background="@drawable/bg_logo_placeholder"
+            android:layout_marginTop="10dp"
             android:contentDescription="Logo"
-            android:padding="18dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/logo" />
 
         <TextView

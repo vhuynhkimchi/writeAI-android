@@ -66,4 +66,6 @@ dependencies {
     implementation libs.google.generativeai
 
     implementation libs.firebase.auth
+
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
