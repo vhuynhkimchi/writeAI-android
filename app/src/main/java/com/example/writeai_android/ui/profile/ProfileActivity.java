@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.writeai_android.R;
+import com.example.writeai_android.utils.BottomNavigationHelper;
 
 public class ProfileActivity extends AppCompatActivity {
     @Override
@@ -18,5 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .replace(R.id.profile_container, new ProfileFragment())
                     .commit();
         }
+
+        BottomNavigationHelper.setup(this, BottomNavigationHelper.TAB_PROFILE);
     }
 }

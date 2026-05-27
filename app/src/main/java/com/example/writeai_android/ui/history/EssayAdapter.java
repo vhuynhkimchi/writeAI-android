@@ -50,7 +50,7 @@ public class EssayAdapter extends RecyclerView.Adapter<EssayAdapter.EssayViewHol
         Essay essay = essays.get(position);
 
         holder.tvItemTopic.setText(formatTopic(essay.getTopic()));
-        holder.tvItemScore.setText("★ " + formatScore(essay.getScore()) + "/10");
+        holder.tvItemScore.setText(formatScore(essay.getScore()) + "/10");
         holder.tvItemContent.setText(DateTimeFormatter.shortenContent(
                 safeText(essay.getContent()),
                 90
@@ -97,12 +97,12 @@ public class EssayAdapter extends RecyclerView.Adapter<EssayAdapter.EssayViewHol
             return "KHÁC";
         }
 
-        String firstTopic = topic.split(",")[0].trim();
+        String result = topic.toUpperCase(Locale.ROOT);
 
-        if (firstTopic.isEmpty()) {
-            return "KHÁC";
+        if (result.length() > 22) {
+            result = result.substring(0, 22) + "...";
         }
 
-        return firstTopic.toUpperCase(Locale.ROOT);
+        return result;
     }
 }
