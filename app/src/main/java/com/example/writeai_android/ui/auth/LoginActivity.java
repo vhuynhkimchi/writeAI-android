@@ -72,7 +72,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        tvForgotPassword.setOnClickListener(v -> resetPassword());
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
         imgTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
 

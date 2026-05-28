@@ -21,6 +21,7 @@ import com.example.writeai_android.R;
 import com.example.writeai_android.data.model.User;
 import com.example.writeai_android.data.repository.UserRepository;
 import com.example.writeai_android.ui.auth.LoginActivity;
+import com.example.writeai_android.ui.auth.ChangePasswordActivity;
 import com.example.writeai_android.utils.NotificationHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,11 +76,8 @@ public class ProfileFragment extends Fragment {
         btnLogout.setOnClickListener(v -> logout());
 
         layoutChangePassword.setOnClickListener(v -> {
-            Toast.makeText(
-                    getContext(),
-                    "Chức năng đổi mật khẩu sẽ làm sau",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Intent intent = new Intent(getContext(), ChangePasswordActivity.class);
+            startActivity(intent);
         });
 
         switchReminder.setOnCheckedChangeListener((buttonView, isChecked) -> {
