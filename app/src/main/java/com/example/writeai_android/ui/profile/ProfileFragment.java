@@ -26,6 +26,16 @@ import com.example.writeai_android.utils.NotificationHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
 import com.google.firebase.auth.FirebaseAuth;
 
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+import com.google.firebase.auth.FirebaseUser;
+import android.net.Uri;
+
 public class ProfileFragment extends Fragment {
 
     private static final int REQ_NOTIFICATION_PERMISSION = 778;
@@ -34,6 +44,7 @@ public class ProfileFragment extends Fragment {
     private Switch switchReminder;
 
     private final UserRepository userRepository = new UserRepository();
+    private ImageView imgAvatar;
 
     @Nullable
     @Override
@@ -62,6 +73,7 @@ public class ProfileFragment extends Fragment {
         tvEmail = view.findViewById(R.id.tvEmail);
         btnLogout = view.findViewById(R.id.btnLogout);
         switchReminder = view.findViewById(R.id.switchReminder);
+        imgAvatar = view.findViewById(R.id.imgAvatar);
     }
 
     private void handleEvents(View view) {
@@ -76,6 +88,15 @@ public class ProfileFragment extends Fragment {
         btnLogout.setOnClickListener(v -> logout());
 
         layoutChangePassword.setOnClickListener(v -> {
+            if (isGoogleUser()) {
+                Toast.makeText(
+                        getContext(),
+                        "Không thể đổi mật khẩu khi đăng nhập bằng Google",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
             Intent intent = new Intent(getContext(), ChangePasswordActivity.class);
             startActivity(intent);
         });
@@ -109,16 +130,76 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    private boolean isGoogleUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return false;
+        }
+
+        for (com.google.firebase.auth.UserInfo profile : user.getProviderData()) {
+            if ("google.com".equals(profile.getProviderId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void loadUserInfo() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (firebaseUser == null) {
+            return;
+        }
+
         userRepository.getCurrentUserInfo(new RepositoryCallback<User>() {
             @Override
             public void onSuccess(User user) {
-                if (user == null || getContext() == null) {
+                if (getContext() == null) {
                     return;
                 }
 
-                tvFullName.setText(safeText(user.getFullName()));
-                tvEmail.setText(safeText(user.getEmail()));
+                String fullName = "";
+                String email = "";
+
+                if (user != null) {
+                    fullName = user.getFullName();
+                    email = user.getEmail();
+                }
+
+                if (fullName == null || fullName.trim().isEmpty()) {
+                    fullName = firebaseUser.getDisplayName();
+                }
+
+                if (email == null || email.trim().isEmpty()) {
+                    email = firebaseUser.getEmail();
+                }
+
+                tvFullName.setText(
+                        fullName == null || fullName.trim().isEmpty()
+                                ? "Chưa cập nhật"
+                                : fullName
+                );
+
+                tvEmail.setText(
+                        email == null || email.trim().isEmpty()
+                                ? "Chưa có email"
+                                : email
+                );
+
+                Uri photoUri = firebaseUser.getPhotoUrl();
+
+                if (photoUri != null && imgAvatar != null) {
+                    Glide.with(ProfileFragment.this)
+                            .load(photoUri)
+                            .placeholder(R.drawable.logo)
+                            .error(R.drawable.logo)
+                            .circleCrop()
+                            .into(imgAvatar);
+                } else if (imgAvatar != null) {
+                    imgAvatar.setImageResource(R.drawable.logo);
+                }
             }
 
             @Override
@@ -160,15 +241,24 @@ public class ProfileFragment extends Fragment {
     private void logout() {
         FirebaseAuth.getInstance().signOut();
 
-        if (getContext() == null) {
-            return;
-        }
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
 
-        requireActivity().finish();
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            if (getContext() == null) {
+                return;
+            }
+
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+            requireActivity().finish();
+        });
     }
 
     @Override

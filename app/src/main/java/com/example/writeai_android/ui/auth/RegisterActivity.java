@@ -79,14 +79,10 @@ public class RegisterActivity extends AppCompatActivity {
         imgToggleConfirmPassword.setOnClickListener(v -> toggleConfirmPasswordVisibility());
 
         btnGoogleRegister.setOnClickListener(v -> {
-            Toast.makeText(
-                    RegisterActivity.this,
-                    "Chức năng đăng ký bằng Google sẽ xử lý ở đây",
-                    Toast.LENGTH_SHORT
-            ).show();
-
-            // Nếu bạn đã có hàm Google Sign-In thì gọi ở đây:
-            // signInWithGoogle();
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            intent.putExtra("open_google_login", true);
+            startActivity(intent);
+            finish();
         });
     }
 

@@ -68,4 +68,6 @@ dependencies {
     implementation libs.firebase.auth
 
     implementation libs.flexbox
+    implementation libs.play.services.auth
+    implementation libs.glide
 }

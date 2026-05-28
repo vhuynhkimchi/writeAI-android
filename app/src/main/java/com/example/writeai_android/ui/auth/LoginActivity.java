@@ -13,6 +13,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.writeai_android.R;
@@ -34,12 +51,23 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private boolean isPasswordVisible = false;
 
+    private GoogleSignInClient googleSignInClient;
+    private FirebaseFirestore firestore;
+
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         auth = FirebaseAuth.getInstance();
+
+        firestore = FirebaseFirestore.getInstance();
+        setupGoogleSignIn();
+        if (getIntent().getBooleanExtra("open_google_login", false)) {
+            signInWithGoogle();
+        }
 
         if (auth.getCurrentUser() != null) {
             goToMain();
@@ -79,16 +107,121 @@ public class LoginActivity extends AppCompatActivity {
 
         imgTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
 
-        btnGoogleLogin.setOnClickListener(v -> {
-            Toast.makeText(
-                    LoginActivity.this,
-                    "Chức năng đăng nhập Google sẽ xử lý ở đây",
-                    Toast.LENGTH_SHORT
-            ).show();
+        btnGoogleLogin.setOnClickListener(v -> signInWithGoogle());
+    }
 
-            // Sau này nếu bạn đã có hàm Google Sign-In thì đổi thành:
-            // signInWithGoogle();
-        });
+    private void setupGoogleSignIn() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Intent data = result.getData();
+
+                    try {
+                        GoogleSignInAccount account = GoogleSignIn
+                                .getSignedInAccountFromIntent(data)
+                                .getResult(ApiException.class);
+
+                        firebaseAuthWithGoogle(account.getIdToken());
+
+                    } catch (ApiException e) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Đăng nhập Google thất bại: " + e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
+    private void signInWithGoogle() {
+        if (googleSignInClient == null) {
+            Toast.makeText(this, "Google Sign-In chưa được khởi tạo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        googleSignInLauncher.launch(signInIntent);
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        if (idToken == null || idToken.trim().isEmpty()) {
+            Toast.makeText(this, "Không lấy được Google ID Token", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+
+        auth.signInWithCredential(credential)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+
+                    if (firebaseUser == null) {
+                        Toast.makeText(this, "Không lấy được thông tin Google user", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    saveGoogleUserToFirestore(firebaseUser);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Firebase Google Auth lỗi: " + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private void saveGoogleUserToFirestore(FirebaseUser firebaseUser) {
+        String uid = firebaseUser.getUid();
+
+        firestore.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        goToMain();
+                        return;
+                    }
+
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("uid", uid);
+                    userData.put("fullName", firebaseUser.getDisplayName() == null ? "" : firebaseUser.getDisplayName());
+                    userData.put("email", firebaseUser.getEmail() == null ? "" : firebaseUser.getEmail());
+                    userData.put("photoUrl", firebaseUser.getPhotoUrl() == null ? "" : firebaseUser.getPhotoUrl().toString());
+                    userData.put("loginProvider", "google");
+                    userData.put("createdAt", Timestamp.now());
+                    userData.put("streakCount", 0);
+                    userData.put("totalEssay", 0);
+                    userData.put("averageScore", 0.0);
+                    userData.put("lastPracticeDate", "");
+
+                    firestore.collection("users")
+                            .document(uid)
+                            .set(userData)
+                            .addOnSuccessListener(unused -> goToMain())
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(
+                                        LoginActivity.this,
+                                        "Lưu thông tin Google user thất bại: " + e.getMessage(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Không kiểm tra được user: " + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
     }
 
     private void login() {
