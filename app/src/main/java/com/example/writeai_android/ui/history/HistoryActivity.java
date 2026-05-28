@@ -68,8 +68,13 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         adapter = new EssayAdapter(new ArrayList<>(), essay -> {
+            if (essay == null || essay.getEssayId() == null || essay.getEssayId().trim().isEmpty()) {
+                Toast.makeText(this, "Không tìm thấy ID bài viết", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Intent intent = new Intent(HistoryActivity.this, ResultActivity.class);
-            intent.putExtra(ResultActivity.EXTRA_ESSAY, essay);
+            intent.putExtra(ResultActivity.EXTRA_ESSAY_ID, essay.getEssayId());
             startActivity(intent);
         });
 
