@@ -58,7 +58,6 @@ public class ResultActivity extends AppCompatActivity {
 
     private void initViews() {
         ImageView btnBack = findViewById(R.id.btnBack);
-        TextView btnMore = findViewById(R.id.btnMore);
 
         layoutTopics = findViewById(R.id.layoutTopics);
         tvCreatedAt = findViewById(R.id.tvCreatedAt);
@@ -67,10 +66,6 @@ public class ResultActivity extends AppCompatActivity {
         layoutAnalysis = findViewById(R.id.layoutAnalysis);
 
         btnBack.setOnClickListener(v -> finish());
-
-        btnMore.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng mở rộng sẽ làm sau", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void loadEssayDetail(String essayId) {

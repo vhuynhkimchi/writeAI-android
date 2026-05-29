@@ -37,16 +37,6 @@
                     android:textColor="#06285D"
                     android:textSize="20sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/btnLogout"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:gravity="center"
-                    android:text="↪"
-                    android:textColor="#3F3F46"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Start Writing Card -->
@@ -102,10 +92,21 @@
                 android:paddingStart="30dp"
                 android:paddingEnd="28dp">
 
-                <View
+                <FrameLayout
                     android:layout_width="58dp"
                     android:layout_height="58dp"
-                    android:background="@drawable/bg_circle_light" />
+                    android:background="@drawable/bg_circle_light">
+
+                    <ImageView
+                        android:id="@+id/imgAttendanceIcon"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Điểm danh"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_fire_off" />
+
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -124,49 +125,14 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvPracticeStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Bạn đang làm rất tốt!"
+                        android:text="Luyện tập mỗi ngày bạn nhé!"
                         android:textColor="#6D6D78"
                         android:textSize="16sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="52dp"
-                    android:layout_height="58dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="7dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/bg_bar_dark" />
-
-                    <View
-                        android:layout_width="7dp"
-                        android:layout_height="42dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/bg_bar_dark" />
-
-                    <View
-                        android:layout_width="7dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/bg_bar_dark" />
-
-                    <View
-                        android:layout_width="7dp"
-                        android:layout_height="34dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/bg_bar_light" />
-
-                    <View
-                        android:layout_width="7dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/bg_bar_light" />
-                </LinearLayout>
+                </LinearLayout>                
             </LinearLayout>
 
             <!-- Stats Row -->
@@ -190,9 +156,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:letterSpacing="0.16"
-                        android:text="ĐIỂM TRUNG\nBÌNH"
+                        android:text="ĐIỂM TRUNG BÌNH"
                         android:textColor="#4A4A55"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -208,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:text="8.5"
                             android:textColor="#06285D"
-                            android:textSize="42sp"
+                            android:textSize="40sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -221,15 +187,6 @@
                             android:textSize="14sp"
                             android:textStyle="bold" />
                     </LinearLayout>
-
-                    <ProgressBar
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_marginTop="22dp"
-                        android:max="100"
-                        android:progress="85"
-                        android:progressDrawable="@drawable/bg_progress_score" />
                 </LinearLayout>
 
                 <!-- Total Essay -->
@@ -246,9 +203,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:letterSpacing="0.16"
-                        android:text="ĐÃ LUYỆN TẬP"
+                        android:text="TỔNG BÀI VIẾT"
                         android:textColor="#4A4A55"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -264,7 +221,7 @@
                             android:layout_height="wrap_content"
                             android:text="12"
                             android:textColor="#06285D"
-                            android:textSize="42sp"
+                            android:textSize="40sp"
                             android:textStyle="bold" />
 
                         <TextView

@@ -41,16 +41,6 @@
                 android:textColor="#071B33"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/btnMore"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:gravity="center"
-                android:text="⋮"
-                android:textColor="#4B5563"
-                android:textSize="28sp"
-                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Topic + Time -->
@@ -125,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:letterSpacing="0.08"
-            android:text="▧  BÀI VIẾT CỦA BẠN"
+            android:text="BÀI VIẾT CỦA BẠN"
             android:textColor="#5F636D"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -173,7 +163,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="34dp"
             android:letterSpacing="0.08"
-            android:text="▣  PHÂN TÍCH TỪ AI"
+            android:text="PHÂN TÍCH TỪ AI"
             android:textColor="#5F636D"
             android:textSize="14sp"
             android:textStyle="bold" />

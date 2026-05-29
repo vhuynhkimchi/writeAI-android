@@ -24,30 +24,14 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/btnBack"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:text="‹"
-                android:textColor="#071B33"
-                android:textSize="34sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:includeFontPadding="false"
-                android:text="Tài khoản"
+                android:text="Tài khoản người dùng"
                 android:textColor="#06285D"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <View
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
         </LinearLayout>
 
         <!-- User card -->
@@ -72,7 +56,7 @@
                     android:contentDescription="Avatar"
                     android:padding="4dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/ic_avatar" />
 
                 <View
                     android:layout_width="18dp"
@@ -91,7 +75,7 @@
                 android:gravity="center"
                 android:text="Nguyễn Văn An"
                 android:textColor="#071B33"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -102,7 +86,7 @@
                 android:gravity="center"
                 android:text="an.nguyen@email.com"
                 android:textColor="#6D6D78"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- Setting title -->
@@ -134,14 +118,18 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
 
-                <TextView
+                <FrameLayout
                     android:layout_width="52dp"
                     android:layout_height="52dp"
-                    android:background="@drawable/bg_setting_icon"
-                    android:gravity="center"
-                    android:text="♧"
-                    android:textColor="#0079B8"
-                    android:textSize="28sp" />
+                    android:background="@drawable/bg_setting_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Bell icon"
+                        android:src="@drawable/ic_bell" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="0dp"
@@ -157,7 +145,7 @@
                     android:id="@+id/switchReminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="false" />
+                    android:checked="true" />
             </LinearLayout>
 
             <View
@@ -178,14 +166,18 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
 
-                <TextView
+                <FrameLayout
                     android:layout_width="52dp"
                     android:layout_height="52dp"
-                    android:background="@drawable/bg_setting_icon"
-                    android:gravity="center"
-                    android:text="▣"
-                    android:textColor="#0079B8"
-                    android:textSize="26sp" />
+                    android:background="@drawable/bg_setting_icon">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="Password icon"
+                        android:src="@drawable/ic_key_password" />
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="0dp"
@@ -207,120 +199,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Support title -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="34dp"
-            android:letterSpacing="0.16"
-            android:text="HỖ TRỢ &amp; GIẢI ĐÁP"
-            android:textColor="#5F636D"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <!-- FAQ card -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_white_card"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/layoutFaqScore"
-                android:layout_width="match_parent"
-                android:layout_height="112dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
-
-                <TextView
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:background="@drawable/bg_setting_icon"
-                    android:gravity="center"
-                    android:text="?"
-                    android:textColor="#0079B8"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="AI chấm điểm dựa trên tiêu chí nào?"
-                        android:textColor="#071B33"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvFaqScoreDetail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="AI phân tích dựa trên ngữ pháp, từ vựng, mạch lạc và mức độ phù hợp chủ đề."
-                        android:textColor="#6D6D78"
-                        android:textSize="14sp"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⌄"
-                    android:textColor="#6D6D78"
-                    android:textSize="28sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E1EAF8" />
-
-            <LinearLayout
-                android:id="@+id/layoutFaqSave"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
-
-                <TextView
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:background="@drawable/bg_setting_icon"
-                    android:gravity="center"
-                    android:text="▱"
-                    android:textColor="#0079B8"
-                    android:textSize="26sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
-                    android:layout_weight="1"
-                    android:text="Làm sao để lưu bài viết?"
-                    android:textColor="#071B33"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⌄"
-                    android:textColor="#6D6D78"
-                    android:textSize="28sp" />
-            </LinearLayout>
-        </LinearLayout>
-
         <!-- Logout -->
         <TextView
             android:id="@+id/btnLogout"
@@ -332,7 +210,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:text="↪  Đăng xuất"
+            android:text="Đăng xuất"
             android:textColor="#B91C1C"
             android:textSize="18sp" />
 

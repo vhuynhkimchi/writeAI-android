@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +26,17 @@ import com.example.writeai_android.utils.RepositoryCallback;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQ_NOTIFICATION_PERMISSION = 991;
 
-    private TextView tvGreeting, tvStreak, tvTotalEssay, tvAverageScore;
-    private View btnPracticeNow, btnLogout;
+    private TextView tvGreeting, tvStreak, tvTotalEssay, tvAverageScore, tvPracticeStatus;
+    private ImageView imgAttendanceIcon;
+    private View btnPracticeNow;
 
     private final UserRepository userRepository = new UserRepository();
 
@@ -48,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         handleEvents();
 
-        // Gọi helper điều hướng dưới cùng
         BottomNavigationHelper.setup(this, BottomNavigationHelper.TAB_HOME);
 
         requestNotificationPermissionIfNeeded();
@@ -60,9 +64,11 @@ public class MainActivity extends AppCompatActivity {
         tvStreak = findViewById(R.id.tvStreak);
         tvTotalEssay = findViewById(R.id.tvTotalEssay);
         tvAverageScore = findViewById(R.id.tvAverageScore);
+        tvPracticeStatus = findViewById(R.id.tvPracticeStatus);
+
+        imgAttendanceIcon = findViewById(R.id.imgAttendanceIcon);
 
         btnPracticeNow = findViewById(R.id.btnPracticeNow);
-        btnLogout = findViewById(R.id.btnLogout);
     }
 
     private void handleEvents() {
@@ -70,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, WritingActivity.class);
             startActivity(intent);
         });
-
-        btnLogout.setOnClickListener(v -> logout());
     }
 
     @Override
@@ -97,11 +101,14 @@ public class MainActivity extends AppCompatActivity {
                 int streakCount = user.getStreakCount();
                 int totalEssay = user.getTotalEssay();
                 double averageScore = user.getAverageScore();
+                String lastPracticeDate = user.getLastPracticeDate();
 
                 tvGreeting.setText("Ứng dụng luyện viết với AI");
                 tvStreak.setText(streakCount + " ngày liên tiếp");
                 tvTotalEssay.setText(String.valueOf(totalEssay));
                 tvAverageScore.setText(formatScoreOneDigit(averageScore));
+
+                updateAttendanceIcon(lastPracticeDate);
             }
 
             @Override
@@ -111,18 +118,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateAttendanceIcon(String lastPracticeDate) {
+        boolean practicedToday = isPracticedToday(lastPracticeDate);
+
+        if (practicedToday) {
+            imgAttendanceIcon.setImageResource(R.drawable.ic_fire_on);
+            tvPracticeStatus.setText("Hôm nay bạn đã điểm danh rồi!");
+        } else {
+            imgAttendanceIcon.setImageResource(R.drawable.ic_fire_off);
+            tvPracticeStatus.setText("Luyện tập mỗi ngày bạn nhé!");
+        }
+    }
+
+    private boolean isPracticedToday(String lastPracticeDate) {
+        if (lastPracticeDate == null || lastPracticeDate.trim().isEmpty()) {
+            return false;
+        }
+
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(new Date());
+
+        return today.equals(lastPracticeDate.trim());
+    }
+
     private String formatScoreOneDigit(double score) {
         DecimalFormat df = new DecimalFormat("0.0");
         return df.format(score);
-    }
-
-    private void logout() {
-        FirebaseAuth.getInstance().signOut();
-
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     private void goToLogin() {

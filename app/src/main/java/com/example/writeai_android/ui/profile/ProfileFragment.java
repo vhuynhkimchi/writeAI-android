@@ -1,13 +1,17 @@
 package com.example.writeai_android.ui.profile;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,34 +21,34 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.writeai_android.R;
 import com.example.writeai_android.data.model.User;
 import com.example.writeai_android.data.repository.UserRepository;
-import com.example.writeai_android.ui.auth.LoginActivity;
 import com.example.writeai_android.ui.auth.ChangePasswordActivity;
+import com.example.writeai_android.ui.auth.LoginActivity;
 import com.example.writeai_android.utils.NotificationHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
-import com.google.firebase.auth.FirebaseAuth;
-
-import android.widget.ImageView;
-import com.bumptech.glide.Glide;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import android.net.Uri;
 
 public class ProfileFragment extends Fragment {
 
     private static final int REQ_NOTIFICATION_PERMISSION = 778;
 
+    private static final String PREF_NAME = "app_settings";
+    private static final String KEY_REMINDER_ENABLED = "reminder_enabled";
+
     private TextView tvFullName, tvEmail, btnLogout;
     private Switch switchReminder;
+    private ImageView imgAvatar;
 
     private final UserRepository userRepository = new UserRepository();
-    private ImageView imgAvatar;
+
+    private boolean isBindingSwitch = false;
 
     @Nullable
     @Override
@@ -64,6 +68,7 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
+        setupReminderSwitch();
         handleEvents(view);
         loadUserInfo();
     }
@@ -76,14 +81,20 @@ public class ProfileFragment extends Fragment {
         imgAvatar = view.findViewById(R.id.imgAvatar);
     }
 
-    private void handleEvents(View view) {
-        View btnBack = view.findViewById(R.id.btnBack);
-        View layoutChangePassword = view.findViewById(R.id.layoutChangePassword);
-        View layoutFaqScore = view.findViewById(R.id.layoutFaqScore);
-        View layoutFaqSave = view.findViewById(R.id.layoutFaqSave);
-        TextView tvFaqScoreDetail = view.findViewById(R.id.tvFaqScoreDetail);
+    private void setupReminderSwitch() {
+        boolean reminderEnabled = getReminderEnabled();
 
-        btnBack.setOnClickListener(v -> requireActivity().finish());
+        isBindingSwitch = true;
+        switchReminder.setChecked(reminderEnabled);
+        isBindingSwitch = false;
+
+        if (reminderEnabled) {
+            enableReminder(false);
+        }
+    }
+
+    private void handleEvents(View view) {
+        View layoutChangePassword = view.findViewById(R.id.layoutChangePassword);
 
         btnLogout.setOnClickListener(v -> logout());
 
@@ -102,31 +113,17 @@ public class ProfileFragment extends Fragment {
         });
 
         switchReminder.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isBindingSwitch) {
+                return;
+            }
+
+            saveReminderEnabled(isChecked);
+
             if (isChecked) {
-                enableReminder();
+                enableReminder(true);
             } else {
-                Toast.makeText(
-                        getContext(),
-                        "Đã tắt nhắc nhở học tập",
-                        Toast.LENGTH_SHORT
-                ).show();
+                disableReminder();
             }
-        });
-
-        layoutFaqScore.setOnClickListener(v -> {
-            if (tvFaqScoreDetail.getVisibility() == View.VISIBLE) {
-                tvFaqScoreDetail.setVisibility(View.GONE);
-            } else {
-                tvFaqScoreDetail.setVisibility(View.VISIBLE);
-            }
-        });
-
-        layoutFaqSave.setOnClickListener(v -> {
-            Toast.makeText(
-                    getContext(),
-                    "Sau khi AI chấm xong, bấm nút Lưu lại để lưu bài viết.",
-                    Toast.LENGTH_LONG
-            ).show();
         });
     }
 
@@ -193,12 +190,12 @@ public class ProfileFragment extends Fragment {
                 if (photoUri != null && imgAvatar != null) {
                     Glide.with(ProfileFragment.this)
                             .load(photoUri)
-                            .placeholder(R.drawable.logo)
-                            .error(R.drawable.logo)
+                            .placeholder(R.drawable.ic_avatar)
+                            .error(R.drawable.ic_avatar)
                             .circleCrop()
                             .into(imgAvatar);
                 } else if (imgAvatar != null) {
-                    imgAvatar.setImageResource(R.drawable.logo);
+                    imgAvatar.setImageResource(R.drawable.ic_avatar);
                 }
             }
 
@@ -211,7 +208,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void enableReminder() {
+    private void enableReminder(boolean showToast) {
         if (getContext() == null) {
             return;
         }
@@ -230,12 +227,66 @@ public class ProfileFragment extends Fragment {
         }
 
         NotificationHelper.scheduleDailyReminder(requireContext());
+        saveReminderEnabled(true);
+
+        if (showToast) {
+            Toast.makeText(
+                    getContext(),
+                    "Đã bật nhắc nhở lúc 20:00 mỗi ngày",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
+    }
+
+    private void disableReminder() {
+        if (getContext() == null) {
+            return;
+        }
+
+        /*
+         * Nếu NotificationHelper của bạn đã có hàm cancelDailyReminder(Context context),
+         * hãy mở dòng bên dưới.
+         */
+        // NotificationHelper.cancelDailyReminder(requireContext());
 
         Toast.makeText(
                 getContext(),
-                "Đã bật nhắc nhở lúc 20:00 mỗi ngày",
+                "Đã tắt nhắc nhở học tập",
                 Toast.LENGTH_SHORT
         ).show();
+    }
+
+    private boolean getReminderEnabled() {
+        if (getContext() == null) {
+            return true;
+        }
+
+        SharedPreferences preferences = requireContext().getSharedPreferences(
+                PREF_NAME,
+                Context.MODE_PRIVATE
+        );
+
+        /*
+         * Mặc định true:
+         * Người dùng mới vào app thì nhắc nhở luôn bật.
+         * Chỉ khi người dùng tự tắt thì mới lưu false.
+         */
+        return preferences.getBoolean(KEY_REMINDER_ENABLED, true);
+    }
+
+    private void saveReminderEnabled(boolean enabled) {
+        if (getContext() == null) {
+            return;
+        }
+
+        SharedPreferences preferences = requireContext().getSharedPreferences(
+                PREF_NAME,
+                Context.MODE_PRIVATE
+        );
+
+        preferences.edit()
+                .putBoolean(KEY_REMINDER_ENABLED, enabled)
+                .apply();
     }
 
     private void logout() {
@@ -274,6 +325,11 @@ public class ProfileFragment extends Fragment {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 NotificationHelper.scheduleDailyReminder(requireContext());
+                saveReminderEnabled(true);
+
+                isBindingSwitch = true;
+                switchReminder.setChecked(true);
+                isBindingSwitch = false;
 
                 Toast.makeText(
                         getContext(),
@@ -281,20 +337,19 @@ public class ProfileFragment extends Fragment {
                         Toast.LENGTH_SHORT
                 ).show();
 
-                switchReminder.setChecked(true);
             } else {
+                saveReminderEnabled(false);
+
+                isBindingSwitch = true;
+                switchReminder.setChecked(false);
+                isBindingSwitch = false;
+
                 Toast.makeText(
                         getContext(),
                         "Bạn cần cấp quyền thông báo để nhận nhắc nhở.",
                         Toast.LENGTH_LONG
                 ).show();
-
-                switchReminder.setChecked(false);
             }
         }
-    }
-
-    private String safeText(String value) {
-        return value == null || value.trim().isEmpty() ? "Chưa cập nhật" : value;
     }
 }

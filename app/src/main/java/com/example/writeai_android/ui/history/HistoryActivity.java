@@ -62,8 +62,6 @@ public class HistoryActivity extends AppCompatActivity {
         tvHistoryTotalEssay = findViewById(R.id.tvHistoryTotalEssay);
         tvHistoryAverageScore = findViewById(R.id.tvHistoryAverageScore);
 
-        View btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
     }
 
     private void setupRecyclerView() {
