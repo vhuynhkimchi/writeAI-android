@@ -32,8 +32,4 @@ public class FirebaseHelper {
     public static CollectionReference essaysRef() {
         return getFirestore().collection("essays");
     }
-
-    public static CollectionReference attendanceRef() {
-        return getFirestore().collection("attendance");
-    }
 }

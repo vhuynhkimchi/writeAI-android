@@ -2,12 +2,10 @@ package com.example.writeai_android.data.repository;
 
 import android.util.Log;
 
-import com.example.writeai_android.data.model.Attendance;
 import com.example.writeai_android.data.model.User;
 import com.example.writeai_android.utils.DateTimeFormatter;
 import com.example.writeai_android.utils.FirebaseHelper;
 import com.example.writeai_android.utils.RepositoryCallback;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -82,7 +80,7 @@ public class UserRepository {
 
                     FirebaseHelper.usersRef().document(uid)
                             .update(updates)
-                            .addOnSuccessListener(unused -> createAttendanceIfNeeded(uid, today, callback))
+                            .addOnSuccessListener(unused -> callback.onSuccess(null))
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Update user stats failed", e);
                                 callback.onError("Không thể cập nhật thông tin người dùng: " + e.getMessage());
@@ -130,17 +128,7 @@ public class UserRepository {
 
                     FirebaseHelper.usersRef().document(uid)
                             .update(updates)
-                            .addOnSuccessListener(unused -> createAttendanceIfNeeded(uid, today, new RepositoryCallback<Void>() {
-                                @Override
-                                public void onSuccess(Void result) {
-                                    callback.onSuccess(newStreak);
-                                }
-
-                                @Override
-                                public void onError(String message) {
-                                    callback.onError(message);
-                                }
-                            }))
+                            .addOnSuccessListener(unused -> callback.onSuccess(newStreak))
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Update streak failed", e);
                                 callback.onError("Không thể cập nhật streak: " + e.getMessage());
@@ -173,43 +161,6 @@ public class UserRepository {
             return currentStreak + 1;
         }
         return 1;
-    }
-
-    private void createAttendanceIfNeeded(String uid, String today, RepositoryCallback<Void> callback) {
-        FirebaseHelper.attendanceRef()
-                .whereEqualTo("userId", uid)
-                .whereEqualTo("date", today)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        callback.onSuccess(null);
-                        return;
-                    }
-
-                    Attendance attendance = new Attendance();
-                    attendance.setAttendanceId(FirebaseHelper.attendanceRef().document().getId());
-                    attendance.setUserId(uid);
-                    attendance.setDate(today);
-                    attendance.setCreatedAt(Timestamp.now());
-
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("attendanceId", attendance.getAttendanceId());
-                    data.put("userId", attendance.getUserId());
-                    data.put("date", attendance.getDate());
-                    data.put("createdAt", attendance.getCreatedAt());
-
-                    FirebaseHelper.attendanceRef().document(attendance.getAttendanceId())
-                            .set(data)
-                            .addOnSuccessListener(unused -> callback.onSuccess(null))
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Create attendance failed", e);
-                                callback.onSuccess(null);
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Check attendance failed", e);
-                    callback.onSuccess(null);
-                });
     }
 
     private int safeInt(Long value) {

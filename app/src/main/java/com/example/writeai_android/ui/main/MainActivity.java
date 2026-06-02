@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQ_NOTIFICATION_PERMISSION = 991;
 
     private TextView tvGreeting, tvStreak, tvTotalEssay, tvAverageScore, tvPracticeStatus;
-    private ImageView imgAttendanceIcon;
+    private ImageView imgStreakIcon;
     private View btnPracticeNow;
 
     private final UserRepository userRepository = new UserRepository();
@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
         tvTotalEssay = findViewById(R.id.tvTotalEssay);
         tvAverageScore = findViewById(R.id.tvAverageScore);
         tvPracticeStatus = findViewById(R.id.tvPracticeStatus);
-
-        imgAttendanceIcon = findViewById(R.id.imgAttendanceIcon);
-
+        imgStreakIcon = findViewById(R.id.imgStreakIcon);
         btnPracticeNow = findViewById(R.id.btnPracticeNow);
     }
 
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 tvTotalEssay.setText(String.valueOf(totalEssay));
                 tvAverageScore.setText(formatScoreOneDigit(averageScore));
 
-                updateAttendanceIcon(lastPracticeDate);
+                updatePracticeStatusIcon(lastPracticeDate);
             }
 
             @Override
@@ -118,14 +116,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateAttendanceIcon(String lastPracticeDate) {
+    private void updatePracticeStatusIcon(String lastPracticeDate) {
         boolean practicedToday = isPracticedToday(lastPracticeDate);
 
         if (practicedToday) {
-            imgAttendanceIcon.setImageResource(R.drawable.ic_fire_on);
-            tvPracticeStatus.setText("Hôm nay bạn đã điểm danh rồi!");
+            imgStreakIcon.setImageResource(R.drawable.ic_fire_on);
+            tvPracticeStatus.setText("Hôm nay bạn đã luyện tập rồi!");
         } else {
-            imgAttendanceIcon.setImageResource(R.drawable.ic_fire_off);
+            imgStreakIcon.setImageResource(R.drawable.ic_fire_off);
             tvPracticeStatus.setText("Luyện tập mỗi ngày bạn nhé!");
         }
     }

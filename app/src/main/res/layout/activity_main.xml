@@ -98,11 +98,11 @@
                     android:background="@drawable/bg_circle_light">
 
                     <ImageView
-                        android:id="@+id/imgAttendanceIcon"
+                        android:id="@+id/imgStreakIcon"
                         android:layout_width="34dp"
                         android:layout_height="34dp"
                         android:layout_gravity="center"
-                        android:contentDescription="Điểm danh"
+                        android:contentDescription="Luyện tập"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_fire_off" />
 
