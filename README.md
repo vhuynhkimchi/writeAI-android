@@ -1,4 +1,5 @@
 # WriteAI Android - Ứng dụng luyện viết Tiếng Anh thông minh với AI
+### Link Drive chạy chương trình: https://drive.google.com/file/d/1KNKc_6cEFWuvhrZwgckqzuB6PI9wrGfz/view?usp=drive_link 
 
 **WriteAI Android** là ứng dụng Android hỗ trợ người dùng luyện viết Tiếng Anh theo chủ đề và nhận phản hồi tự động từ AI. Ứng dụng sử dụng **Gemini AI** để chấm điểm bài viết, phát hiện lỗi ngữ pháp, đưa ra gợi ý cải thiện và tạo bản sửa hoàn chỉnh.
 
